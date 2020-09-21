@@ -3,7 +3,14 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    follows = models.ManyToManyField(
+        'self',
+        related_name='followed_by',
+        symmetrical=False
+    )
+
+    def is_followed_by(self):
+        return self.followed_by.count()
 
 
 class Post(models.Model):

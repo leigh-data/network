@@ -1,0 +1,8 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <h2>{{ profile_user.username }}</h2>
+    <p>Follows: {{ profile_user.follows.count }}</p>
+    <p>Followers: {{ profile_user.is_followed_by }}</p>
+    {% include 'network/post_display.html' %}
+{% endblock %}

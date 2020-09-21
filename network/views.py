@@ -1,6 +1,7 @@
 from django.forms import ModelForm, Textarea
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -32,10 +33,6 @@ def paginate(post_list, page):
         posts = paginator.page(paginator.num_pages)
     
     return posts
-
-
-# def index(request):
-#     return render(request, "network/index.html")
 
 
 def login_view(request):
@@ -121,3 +118,26 @@ class IndexView(View):
         posts = paginate(post_list, page)
         context = {'posts': posts, 'form': form}
         return render(request, "network/index.html", context)
+
+
+class ProfileView(View):
+    def get(self, request, username, *args, **kwargs):
+        profile_user = User.objects.get(username=username)
+        post_list = profile_user.posts.all()
+        page = request.GET.get('page', 1)
+        posts = paginate(post_list, page)
+        
+        context = {'profile_user': profile_user,'posts': posts}
+        return render(request, "network/profile.html", context)
+
+
+class FollowingView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        page = request.GET.get('page', 1)
+        follows = user.follows.all()
+        post_list = Post.objects.filter(author__in=follows)
+        posts = paginate(post_list, page)
+        
+        context = {'posts': posts}
+        return render(request, "network/following.html", context)
