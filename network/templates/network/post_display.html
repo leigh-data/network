@@ -1,8 +1,26 @@
 {% for post in posts %}
-    <div class="post">
-    <h3><a href="#">{{ post.author.username }}</a></h3>
-    <p>{{ post.content }}</p>
-    <span>{{ post.date_created }}</span>
+    <div class="card post-card my-3">
+        <div class="card-body card-content">
+            <h5 class="card-title"><a href="{% url 'profile' post.author.username %}">{{ post.author.username }}</a></h5>
+            <p class="card-text">{{ post.content }}</p>
+            <p class="card-text">{{ post.date_created }}</p>
+        </div>
+        {% if user == post.author %}
+        <div class="card-body card-form hide">
+            <form data-post-id="{{ post.pk }}">
+                <div class="form-group">
+                    <textarea class="form-control" name="content" rows="3">{{ post.content }}</textarea>
+                </div>
+                <button class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        {% endif %}
+        <div class="card-footer">
+            like
+            {% if user == post.author %}
+                <button class="btn btn-primary edit-toggle">Edit</button>
+            {% endif %}
+        </div>
     </div>
     {% empty %}
     <p>There are no posts.</p>

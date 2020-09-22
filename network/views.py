@@ -1,10 +1,12 @@
+import json
+
 from django.forms import ModelForm, Textarea
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -18,7 +20,7 @@ class PostForm(ModelForm):
     class Meta:
         model = Post
         fields = ('content',)
-        widgets = {'content': Textarea()}
+        widgets = {'content': Textarea(attrs={'class': 'form-control', 'rows':'3'})}
 
 
 def paginate(post_list, page):
@@ -141,3 +143,18 @@ class FollowingView(LoginRequiredMixin, View):
         
         context = {'posts': posts}
         return render(request, "network/following.html", context)
+
+
+class PostUpdateView(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        user = request.user
+        post = user.posts.get(pk=pk)
+        data = json.loads(request.body.decode('UTF-8'))
+        content = data['content']
+        
+        if 0 < len(content) <= 126:
+            post.content = content
+            post.save()
+            return JsonResponse({'content': content}, status=201)
+        else:
+            return JsonResponse({}, status=400)

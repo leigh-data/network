@@ -5,7 +5,10 @@
         <div class="form">
             <form action="." method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {{ form.errors.content }}
+                <div class="form-group">
+                    {{ form.content }}
+                </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
