@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     })
       .then((res) => res.json())
       .then((data) => {
+        // change classes and styles on success
         follows.innerHTML = `Follows: ${data.follows}`;
         following.innerHTML = `Following: ${data.following}`;
         followButton.classList.toggle('following-user');
@@ -102,7 +103,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
       });
   }
   
-  // Add event hander for Follow button, if one exists
+  // Add event handler for Follow button, if one exists
   if (profileHeader) {
     const followButton = profileHeader.getElementsByClassName('btn')[0];
     if (followButton) followButton.addEventListener('click', followButtonHandler);
@@ -114,6 +115,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     let editToggleButton = postCards[i].getElementsByClassName('edit-toggle')[0];
     let likeButton = postCards[i].getElementsByClassName('like-button')[0];
     
+    // editToggleButton, postEditForm, and likeButton may not exist
     if (editToggleButton) {
       editToggleButton.addEventListener('click', editToggleButtonHandler);
     }

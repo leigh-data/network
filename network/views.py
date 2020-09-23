@@ -140,6 +140,8 @@ class ProfileView(View):
 
         if not profile_user:
             return JsonResponse({}, status=404)
+        if user == profile_user:
+            return JsonResponse({}, 400)
         if following:
             profile_user.followed_by.remove(user)
         else:
