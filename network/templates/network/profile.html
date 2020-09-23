@@ -1,8 +1,17 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    <h2>{{ profile_user.username }}</h2>
-    <p>Follows: {{ profile_user.follows.count }}</p>
-    <p>Followers: {{ profile_user.is_followed_by }}</p>
+    <div class="profile-header">
+        <h2>{{ profile_user.username }}</h2>
+        <span class="follows">Follows: {{ profile_user.follows.count }}</span>
+        <span class="following">Following: {{ profile_user.is_followed_by }}</span>
+        {% if user.is_authenticated and user != profile_user %}
+            {% if user in profile_user.followed_by.all %}
+                <button class="btn btn-danger follow-button following-user" data-user-name="{{ profile_user.username }}">Unfollow</button>
+            {% else %}
+                <button class="btn btn-primary follow-button" data-user-name="{{ profile_user.username }}">Follow</button>
+            {% endif %}   
+        {% endif %}
+    </div>
     {% include 'network/post_display.html' %}
 {% endblock %}

@@ -132,6 +132,24 @@ class ProfileView(View):
         context = {'profile_user': profile_user,'posts': posts}
         return render(request, "network/profile.html", context)
     
+    def post(self, request, username, *args, **kwargs):
+        user = request.user
+        profile_user = User.objects.get(username=username)
+        data = json.loads(request.body.decode('UTF-8'))
+        following = data['following-user']
+
+        if not profile_user:
+            return JsonResponse({}, status=404)
+        if following:
+            profile_user.followed_by.remove(user)
+        else:
+            profile_user.followed_by.add(user)
+
+        following = profile_user.followed_by.count()
+        follows = profile_user.follows.count()
+
+        return JsonResponse({'following': following, 'follows': follows}, status=201)
+
 
 class FollowingView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):

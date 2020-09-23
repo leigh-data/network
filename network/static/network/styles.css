@@ -13,3 +13,7 @@
 .liked {
     color: red;
 }
+
+.next {
+    float: right;
+}

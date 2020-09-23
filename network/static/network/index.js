@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => {
   const postCards = document.getElementsByClassName('post-card');
+  const profileHeader = document.getElementsByClassName('profile-header')[0]
   const csrftoken = () => Cookies.get('csrftoken');
 
   const editFormHandler = e => {
@@ -8,7 +9,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const form = e.target;
     const postId = form.dataset.postId;
     const editToggle = form.parentNode.parentNode.getElementsByClassName('edit-toggle')[0];
-    const displayContent = form.parentNode.parentNode.getElementsByClassName('card-text')[0];
+    const displayContent = form.parentNode.parentNode.getElementsByClassName('card-text')[0]; 
     const contentInput = form.elements.namedItem("content");
     const content = contentInput.value;
     const data = JSON.stringify({ content });
@@ -67,7 +68,47 @@ document.addEventListener('DOMContentLoaded', (event) => {
         console.error(err);
       });
   }
+
+  const followButtonHandler = e => {
+    const followButton = e.target;
+    const follows = profileHeader.getElementsByClassName('follows')[0];
+    const following = profileHeader.getElementsByClassName('following')[0];
+    const followingUser = followButton.classList.contains('following-user')
+    const username = followButton.dataset.userName;
+    const data = JSON.stringify({'following-user': followingUser});
+
+    fetch(`/${username}`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrftoken(),
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        follows.innerHTML = `Follows: ${data.follows}`;
+        following.innerHTML = `Following: ${data.following}`;
+        followButton.classList.toggle('following-user');
+        followButton.classList.toggle('btn-danger');
+        followButton.classList.toggle('btn-primary');
+        
+        // Set the button display text based on 'following-user' class
+        if (followButton.classList.contains('following-user')) followButton.innerHTML = 'Unfollow';
+        else followButton.innerHTML = 'Follow'
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
   
+  // Add event hander for Follow button, if one exists
+  if (profileHeader) {
+    const followButton = profileHeader.getElementsByClassName('btn')[0];
+    if (followButton) followButton.addEventListener('click', followButtonHandler);
+  }
+
+  // Add event handlers for the cards
   for(let i = 0; i < postCards.length; i++) {
     let postEditForm = postCards[i].getElementsByTagName('form')[0];
     let editToggleButton = postCards[i].getElementsByClassName('edit-toggle')[0];
@@ -81,8 +122,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
       postEditForm.addEventListener('submit', editFormHandler);
     }
 
-    if(likeButton) {
+    if (likeButton) {
       likeButton.addEventListener('click', likeButtonHandler);
     }
+
   }
 });
