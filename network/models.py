@@ -8,6 +8,10 @@ class User(AbstractUser):
         related_name='followed_by',
         symmetrical=False
     )
+    likes = models.ManyToManyField(
+        'network.Post',
+        related_name='liked_by',
+    )
 
     def is_followed_by(self):
         return self.followed_by.count()

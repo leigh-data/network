@@ -16,7 +16,10 @@
         </div>
         {% endif %}
         <div class="card-footer">
-            like
+            <div class="likes" data-post-id="{{ post.id }}">
+                <span class="{% if user.is_authenticated %}like-button {% endif %}{% if user in post.liked_by.all %}liked{% endif %}">&#9829;</span>
+                <span class="like-count">{{ post.liked_by.count }}</span>
+            </div>
             {% if user == post.author %}
                 <button class="btn btn-primary edit-toggle">Edit</button>
             {% endif %}

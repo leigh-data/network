@@ -131,7 +131,7 @@ class ProfileView(View):
         
         context = {'profile_user': profile_user,'posts': posts}
         return render(request, "network/profile.html", context)
-
+    
 
 class FollowingView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
@@ -150,11 +150,32 @@ class PostUpdateView(LoginRequiredMixin, View):
         user = request.user
         post = user.posts.get(pk=pk)
         data = json.loads(request.body.decode('UTF-8'))
-        content = data['content']
+        content = data['content'].strip()
         
-        if 0 < len(content) <= 126:
+        if not post:
+            return JsonResponse({}, status=401)
+        elif 0 < len(content) <= 126:
             post.content = content
             post.save()
             return JsonResponse({'content': content}, status=201)
         else:
-            return JsonResponse({}, status=400)
+            return JsonResponse({'content': post.content }, status=400)
+
+
+class LikePostView(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        user = request.user
+        post = Post.objects.get(pk=pk)
+        data = json.loads(request.body.decode('UTF-8'))
+        liked = data['liked']
+
+        if not post:
+            return JsonResponse({}, status=404)
+        if liked:
+            post.liked_by.remove(user)
+        else:
+            post.liked_by.add(user)
+        
+        count = post.liked_by.count()
+        return JsonResponse({'count': count}, status=201)
+
