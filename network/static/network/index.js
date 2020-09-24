@@ -127,6 +127,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
     if (likeButton) {
       likeButton.addEventListener('click', likeButtonHandler);
     }
-
   }
 });
