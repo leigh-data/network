@@ -123,6 +123,8 @@ class IndexView(View):
 
 
 class ProfileView(View):
+    """The get method of this view returns an HTML response, while
+    the post method returns a JsonResponse object."""
     def get(self, request, username, *args, **kwargs):
         profile_user = User.objects.get(username=username)
         post_list = profile_user.posts.all()
