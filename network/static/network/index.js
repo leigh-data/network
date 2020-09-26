@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const username = followButton.dataset.userName;
     const data = JSON.stringify({'following-user': followingUser});
 
-    fetch(`/${username}`, {
+    fetch(`/${username}/`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': csrftoken(),
