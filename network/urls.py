@@ -13,5 +13,5 @@ urlpatterns = [
          views.PostUpdateView.as_view(), name="update"),
     path("api/likes/<int:pk>/",
          views.LikePostView.as_view(), name="like"),
-    path("<str:username>", views.ProfileView.as_view(), name="profile"),
+    path("<str:username>/", views.ProfileView.as_view(), name="profile"),
 ]
