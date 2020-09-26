@@ -1,8 +1,8 @@
 # Network
 
-[GitHub](https://google.com)
-[YouTube](https://google.com)
-[Heroku](https://google.com)
+[GitHub](https://github.com/leigh-data/network)
+[YouTube](https://youtu.be/aduU_rM2cPM)
+[Heroku](https://network-19125.herokuapp.com)
 
 ---
 
